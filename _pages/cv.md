@@ -2,6 +2,7 @@
 layout: cv
 permalink: /cv/
 title: CV
+redirect: /assets/pdf/CV.pdf
 nav: true
 nav_order: 3
 cv_pdf: /assets/pdf/CV.pdf # you can also use external links here
