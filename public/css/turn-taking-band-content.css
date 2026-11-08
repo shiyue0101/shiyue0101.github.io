@@ -1,0 +1,26 @@
+/* TURN_TAKING_BAND_CONTENT_V2 */
+.case-study .ttb-figure-ref {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.case-study .ttb-figure-ref:hover,
+.case-study .ttb-figure-ref:focus-visible { color: #96566d; }
+.case-study figure[id^="ttb-figure-"] { scroll-margin-top: 110px; }
+.case-study figure[id^="ttb-figure-"]:target {
+  outline: 1px solid currentColor;
+  outline-offset: 6px;
+}
+.case-study .ttb-figure-number { font-weight: 600; }
+.case-study .ttb-list {
+  margin: 0.4rem 0 1rem 1.2rem;
+  padding-left: 0.45rem;
+}
+.case-study .ttb-list li + li { margin-top: 0.4rem; }
+.case-study .ttb-list strong { font-weight: 700; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
