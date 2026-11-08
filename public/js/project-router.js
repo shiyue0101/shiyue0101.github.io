@@ -22,9 +22,17 @@
 
   let pendingProjectToken = 0;
   let projectRevealFallback = null;
-  function beginProjectReveal(token) {
-    pendingProjectToken = token;
+  let resolveProjectReady;
+  function finishProjectReveal() {
     clearTimeout(projectRevealFallback);
+    loadingFrame = false;
+    document.documentElement.classList.remove("spa-project-loading");
+    resolveProjectReady?.();
+    resolveProjectReady = null;
+  }
+  function beginProjectReveal(token) {
+    finishProjectReveal();
+    pendingProjectToken = token;
     document.documentElement.classList.add("spa-project-loading");
     // Hide the previous document *before* fetching the next one.
     frame.hidden = true;
@@ -38,6 +46,9 @@
       );
       location.assign(activePath || location.pathname);
     }, 7000);
+    return new Promise((resolve) => {
+      resolveProjectReady = resolve;
+    });
   }
   async function revealProject(token) {
     if (generation !== token || pendingProjectToken !== token || !activePath)
@@ -61,15 +72,10 @@
       );
       if (generation !== token || pendingProjectToken !== token || !activePath)
         return;
-      clearTimeout(projectRevealFallback);
-      loadingFrame = false;
-      document.documentElement.classList.remove("spa-project-loading");
+      finishProjectReveal();
     } catch (error) {
       console.warn("[Project SPA] Reveal check:", error);
-      if (generation === token) {
-        clearTimeout(projectRevealFallback);
-        document.documentElement.classList.remove("spa-project-loading");
-      }
+      if (generation === token) finishProjectReveal();
     }
   }
   const isProject = HomepageRoutes.isProject;
@@ -87,31 +93,16 @@
     activePath = null;
     frame.hidden = true;
     pendingProjectToken = 0;
-    clearTimeout(projectRevealFallback);
-    document.documentElement.classList.remove("spa-project-loading");
+    finishProjectReveal();
     frame.remove(); // Remove the browsing context instead of navigating it.
     document.documentElement.classList.remove("spa-project-open");
     HomepageRoutes.sync();
   }
   function regularPath(path, push = true) {
     if (!REGULAR.has(path)) return;
-    // SITE_SOFT_TRANSITIONS_PROJECT_EXIT_V1
-    // Delay closing the iframe until the fade curtain covers its last frame.
-    if (
-      activePath &&
-      window.HomepageSoftTransition &&
-      !regularPath.__softBypass
-    ) {
-      window.HomepageSoftTransition.run(() => {
-        regularPath.__softBypass = true;
-        try {
-          regularPath(path, push);
-        } finally {
-          regularPath.__softBypass = false;
-        }
-      });
-      return;
-    }
+    return HomepageSoftTransition.run(() => applyRegularPath(path, push));
+  }
+  function applyRegularPath(path, push) {
     hideFrame();
     // Call the existing Home router directly; do NOT briefly show Projects first.
     const page = path === "/" ? "home" : path.slice(1);
@@ -207,8 +198,11 @@
     doc.head.appendChild(guard);
     return "<!doctype html>\n" + doc.documentElement.outerHTML;
   }
-  async function loadProject(path, { push = false } = {}) {
+  function loadProject(path, { push = false } = {}) {
     if (!isProject(path)) return false;
+    return HomepageSoftTransition.run(() => loadProjectFrame(path, push));
+  }
+  async function loadProjectFrame(path, push) {
     // PROJECT_IFRAME_HISTORY_FIX_V7
     // Exactly one top-level history entry per user-initiated project navigation.
     if (push && location.pathname !== path) {
@@ -219,7 +213,7 @@
     }
     const current = ++generation;
     activePath = path;
-    beginProjectReveal(current);
+    const ready = beginProjectReveal(current);
     try {
       if (!cache.has(path)) {
         const res = await fetch(path, { credentials: "same-origin" });
@@ -255,13 +249,13 @@
       document.body.appendChild(frame);
       frame.hidden = false;
       HomepageRoutes.sync(path);
+      await ready;
       return true;
     } catch (err) {
       if (generation !== current) return false;
-      clearTimeout(projectRevealFallback);
-      document.documentElement.classList.remove("spa-project-loading");
+      finishProjectReveal();
       console.error("[Project SPA] project load failed", err);
-      if (push) location.assign(path);
+      location.assign(path);
       return false;
     }
   }
@@ -411,16 +405,7 @@
       loadProject(path, { push: false });
       return;
     }
-    hideFrame();
-    // main.js also listens to popstate. Explicitly restore the visible
-    // Projects section, rather than assuming that removing iframe is enough.
-    if (path === "/projects" && typeof showSection === "function") {
-      showSection("projects", false, { transition: false });
-      document.documentElement.classList.remove(
-        "spa-project-open",
-        "spa-project-loading",
-      );
-    }
+    regularPath(REGULAR.has(path) ? path : "/", false);
   });
   window.HomepageProjectRouter = { loadProject, hideFrame };
   if (isProject(location.pathname)) loadProject(location.pathname);

@@ -6,15 +6,24 @@ body #loading-overlay.project-exit-loading {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  opacity: 1 !important;
+  opacity: 1;
   visibility: visible !important;
   pointer-events: auto !important;
   background: var(--background, #e8c6c1) !important;
-  transition: none !important;
+  animation: project-exit-fade 200ms ease both;
 }
 body #loading-overlay.project-exit-loading .cat-paw-loading {
   width: min(88vw, 420px);
   font-family: Georgia, "Times New Roman", serif;
   text-align: center;
   color: var(--accent, #773548);
+}
+@keyframes project-exit-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body #loading-overlay.project-exit-loading {
+    animation: none;
+  }
 }

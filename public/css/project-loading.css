@@ -11,7 +11,7 @@ html:not(.project-paw-ready) #loading-overlay {
   pointer-events: auto !important;
   background: var(--background, #e8c6c1) !important;
 }
-html.project-paw-ready #loading-overlay {
+html.project-paw-ready #loading-overlay:not(.project-exit-loading) {
   position: fixed;
   inset: 0;
   z-index: 99999;
@@ -28,7 +28,7 @@ html.project-paw-finished #loading-overlay {
   display: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  html.project-paw-ready #loading-overlay {
+  html.project-paw-ready #loading-overlay:not(.project-exit-loading) {
     transition: none;
   }
 }

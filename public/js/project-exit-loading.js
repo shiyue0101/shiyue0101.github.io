@@ -76,7 +76,8 @@
       // Give the overlay at least two frames to appear before unloading the document.
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
-          setTimeout(() => location.assign(url.href), 100);
+          const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+          setTimeout(() => location.assign(url.href), reduced ? 0 : 480);
         }),
       );
       // Safety fallback: navigation blocked by browser or extension.

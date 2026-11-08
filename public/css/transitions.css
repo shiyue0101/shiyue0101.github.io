@@ -7,6 +7,9 @@
   bottom: 0;
   z-index: 2050;
   background: #efd9d5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -21,6 +24,9 @@
   transition:
     opacity 200ms ease,
     visibility 0s;
+}
+#site-soft-transition-curtain:not(.is-active) .cat-paw-step {
+  animation-name: none;
 }
 /* The existing SPA iframe retains its own previously installed fade-on-enter. */
 @keyframes site-section-soft-arrive {

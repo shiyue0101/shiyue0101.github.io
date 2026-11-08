@@ -6,7 +6,6 @@ const sections = {
   professional: document.getElementById("professional"),
   life: document.getElementById("life"),
 };
-const crtFlash = document.getElementById("crt-flash");
 const backBtn = document.getElementById("back-btn");
 const loadingOverlay = document.getElementById("loading-overlay");
 let loadingHideTimer;
@@ -37,10 +36,13 @@ document.querySelector(".site-header").addEventListener("click", (event) => {
     event.metaKey ||
     event.ctrlKey ||
     event.shiftKey ||
-    event.altKey
+    event.altKey ||
+    link.target ||
+    link.hasAttribute("download")
   )
     return;
   event.preventDefault();
+  if (HomepageRoutes.normalize(location.pathname) === link.pathname) return;
   if (link.dataset.navPage === "home") {
     showHome({ push: true, transition: true });
   } else {
@@ -58,28 +60,16 @@ function applyHomeState() {
   backBtn.classList.remove("visible");
 }
 
-// loading-policy: initial-navigation-only
-// The HTML/CSS loading guard covers the first paint of each full document load.
-// In-page navigation must never show the loading overlay again.
-// ROUTE_TRANSITION_GUARD_V1
-let navigationGeneration = 0;
 function showHome({ push = false, transition = false, initial = false } = {}) {
-  const currentNavigation = ++navigationGeneration;
   const finish = () => {
-    if (currentNavigation !== navigationGeneration) return;
     applyHomeState();
-    crtFlash.classList.remove("active");
     if (push) history.pushState({}, "", "/");
     HomepageRoutes.sync("/");
     if (initial) hideLoading(0);
   };
 
-  if (transition) {
-    crtFlash.classList.add("active");
-    setTimeout(finish, 200);
-  } else {
-    finish();
-  }
+  if (transition) return HomepageSoftTransition.run(finish);
+  finish();
 }
 
 function showSection(
@@ -87,11 +77,8 @@ function showSection(
   push = false,
   { initial = false, transition = true } = {},
 ) {
-  const currentNavigation = ++navigationGeneration;
   if (!sections[page]) return;
-  if (transition) crtFlash.classList.add("active");
   const finish = () => {
-    if (currentNavigation !== navigationGeneration) return;
     Object.values(sections).forEach((sec) => {
       sec.classList.remove("active");
       sec.classList.add("hidden");
@@ -104,14 +91,13 @@ function showSection(
       sections.professional.scrollTop = 0;
       updateProfessionalScrollbar();
     }
-    crtFlash.classList.remove("active");
     backBtn.classList.toggle("visible", page === "skills");
     if (push) history.pushState({ page }, "", "/" + page);
     HomepageRoutes.sync("/" + page);
     if (initial) hideLoading(0);
   };
-  if (transition) setTimeout(finish, 200);
-  else finish();
+  if (transition) return HomepageSoftTransition.run(finish);
+  finish();
 }
 
 backBtn.addEventListener("click", () => {
@@ -145,6 +131,3 @@ document.addEventListener("DOMContentLoaded", function () {
     hideLoading(0);
   }
 });
-
-// 监听浏览器前进后退
-window.addEventListener("popstate", () => handleRoute());
