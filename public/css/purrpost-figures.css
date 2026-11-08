@@ -1,27 +1,6 @@
-/* PurrPost-specific in-text figure references. */
-.case-study .purrpost-figure-ref {
-  color: #8e405a;
-  text-decoration: underline;
-  text-decoration-color: rgba(142, 64, 90, 0.42);
-  text-underline-offset: 0.17em;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.case-study .purrpost-figure-ref:hover,
-.case-study .purrpost-figure-ref:focus-visible {
-  color: #64283e;
-  text-decoration-color: currentColor;
-}
-.split-project-media .purrpost-cat-photo img {
-  display: block;
-  max-width: 100%;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-/* PurrPost autoethnography figures */
-.split-project-media figure.purrpost-autoethnography-photo img {
+/* PurrPost photos fill the project image rail. */
+.split-project-media .purrpost-cat-photo img,
+.split-project-media .purrpost-autoethnography-photo img {
   display: block;
   width: 100%;
   max-width: 100%;

@@ -29,6 +29,7 @@ public/
     piano-home.js            88 键钢琴、导航/自由演奏、静音、音符动画
     piano-home-bridge.js     校验钢琴 iframe 发来的导航消息
     project-layout.js        项目正文和图片的独立滚动双栏
+    project-figure-links.js  项目正文图号与图片列的跳转
     project-page.js          项目目录、滚动高亮及焦点
     project-loading.js       独立项目页的初次加载
     project-exit-loading.js  独立项目页退出动画
@@ -62,6 +63,7 @@ server.js                    复用 routes.js 提供页面与静态文件
 - 页面路由与标题在 `public/js/routes.js` 修改；路由渲染主动同步状态，无需改写 `history` 方法或监听标题变动。
 - `/about`、`/about/`、`/about/index.html` 都返回同一个 About 分区，不重定向。
 - 经历内容只维护 `index.html` 内的 `experience-*` 模板；不要再复制到 JavaScript。
+- 图号链接使用 `class="figure-ref"`，以 `href="#figure-N"` 指向图片，无需额外的目标属性。
 - 项目媒体放在 `<figure>` 中，由 `project-layout.js` 移入图片列；纯文字项目沿用单栏。
 - 目录监听捕获阶段的滚动事件，以支持正文列独立滚动。
 - `/skills` 仍可直接访问。没有导航入口不代表文件或功能废弃。

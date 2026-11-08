@@ -175,6 +175,9 @@
           const url = new URL(a.href, document.baseURI);
           const current = new URL(document.baseURI);
           if (url.hash && url.pathname === current.pathname) {
+            // Figure links and the floating TOC own their scroll behavior.
+            if (a.matches(".figure-ref, .project-floating-toc a")) return;
+            if (e.defaultPrevented) return;
             e.preventDefault();
             document
               .getElementById(decodeURIComponent(url.hash.slice(1)))
@@ -344,6 +347,7 @@
     if (destination.hash && destination.pathname === current.pathname) {
       // A base URL makes native srcdoc anchor clicks load the standalone page.
       // Prevent that navigation; the inner TOC can still update its highlight.
+      if (a.matches(".figure-ref, .project-floating-toc a")) return;
       event.preventDefault();
       frame.contentDocument
         .getElementById(decodeURIComponent(destination.hash.slice(1)))

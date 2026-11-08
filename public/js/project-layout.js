@@ -16,19 +16,6 @@
     const blocks = [...root.querySelectorAll("figure")].filter((figure) =>
       figure.querySelector("img,picture,video,iframe"),
     );
-    // PURRPOST_FIGURE_ORDER_BY_TEXT:
-    // Only PurrPost opts in. The right image rail follows figure numbering,
-    // which is assigned by first appearance in the reading column.
-    if (root.hasAttribute("data-purrpost-figure-order")) {
-      blocks.sort((a, b) => {
-        const number = (figure) => {
-          const match = figure.id.match(/^figure-(\\d+)$/);
-          return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
-        };
-        return number(a) - number(b);
-      });
-    }
-
     if (!blocks.length) {
       return;
     }
@@ -43,18 +30,10 @@
     root.parentNode.insertBefore(wrap, root);
     wrap.append(text, media);
     text.appendChild(root);
-    // PURRPOST_SORT_MEDIA_BY_FIGURE_NUMBER_V1
-    // Only PurrPost: sort numbered figures before moving them to the image rail.
-    // Unnumbered figures retain their own relative order after numbered figures.
-    const isPurrPost = /\bpurrpost\b/i.test(location.pathname) ||
-      /Not Alone, Just Apart/i.test(root.querySelector("h1")?.textContent || "");
-    if (isPurrPost) {
+    if (root.hasAttribute("data-purrpost-figure-order")) {
       const numberOf = (figure) => {
-        const idMatch = /^figure-(\d+)$/i.exec(figure.id || "");
-        if (idMatch) return Number(idMatch[1]);
-        const caption = figure.querySelector("figcaption")?.textContent || "";
-        const captionMatch = /^\s*Figure\s+(\d+)\b/i.exec(caption);
-        return captionMatch ? Number(captionMatch[1]) : Infinity;
+        const match = /^figure-(\d+)$/.exec(figure.id);
+        return match ? Number(match[1]) : Infinity;
       };
       blocks.sort((a, b) => numberOf(a) - numberOf(b));
     }
