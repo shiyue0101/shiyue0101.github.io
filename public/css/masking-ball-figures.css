@@ -12,3 +12,19 @@
   color: #64283e;
   text-decoration-color: currentColor;
 }
+
+/* Structured lists in the Masking Ball case study */
+.case-study .masking-content-list {
+  margin: 0.45rem 0 1.15rem 1.25rem;
+  padding-left: 0.45rem;
+  list-style: disc;
+}
+.case-study .masking-content-list li {
+  padding-left: 0.12rem;
+}
+.case-study .masking-content-list li + li {
+  margin-top: 0.45rem;
+}
+.case-study .masking-content-list strong {
+  font-weight: 700;
+}

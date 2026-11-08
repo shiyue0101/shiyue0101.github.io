@@ -1,9 +1,9 @@
-/* Masking Ball carousels: stable image stage, consistent width, overlay arrows. */
+/* Masking Ball carousels and structured lists */
 .case-study .masking-figure-ref {
   color: #8e405a;
   text-decoration: underline;
-  text-decoration-color: rgba(142, 64, 90, .42);
-  text-underline-offset: .17em;
+  text-decoration-color: rgba(142, 64, 90, 0.42);
+  text-underline-offset: 0.17em;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -13,7 +13,6 @@
   text-decoration-color: currentColor;
 }
 
-/* Keep every carousel the same width and reserve space before images load. */
 .case-study figure.masking-figure-carousel {
   width: 100%;
   max-width: 100%;
@@ -23,26 +22,25 @@
   position: relative;
   display: block;
   width: 100%;
-  min-width: 0;
 }
 .masking-figure-carousel .masking-carousel-slides {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: rgba(255, 255, 255, .22);
+  background: rgba(255, 255, 255, 0.24);
 }
 .masking-figure-carousel .masking-carousel-slide {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  min-width: 0;
+  padding: 0 0 2.2rem 0;
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
+  overflow: visible;
 }
 .masking-figure-carousel .masking-carousel-slide[hidden] {
   display: none !important;
@@ -50,72 +48,91 @@
 .masking-figure-carousel .masking-carousel-slide img {
   display: block;
   width: 100%;
-  height: calc(100% - 1.65rem);
+  height: 100%;
   max-width: 100%;
   object-fit: contain;
-  object-position: center;
+  object-position: center top;
   margin: 0 auto;
 }
 .masking-figure-carousel .masking-carousel-letter {
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  transform: translateX(-50%);
   display: block;
-  flex: 0 0 1.65rem;
-  line-height: 1.65rem;
+  min-width: 2.25rem;
+  padding: 0 0.25rem;
+  line-height: 1.2;
   text-align: center;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 999px;
 }
 .masking-figure-carousel .masking-carousel-arrow {
   position: absolute;
   z-index: 2;
-  top: 50%;
+  top: calc(50% - 1.1rem);
   transform: translateY(-50%);
   display: grid;
   place-items: center;
-  width: 2.55rem;
-  height: 2.55rem;
+  width: 2.7rem;
+  height: 2.7rem;
   padding: 0;
-  border: 1px solid rgba(120, 65, 80, .24);
+  border: 1px solid rgba(120, 65, 80, 0.25);
   border-radius: 50%;
-  background: rgba(255, 255, 255, .58);
+  background: rgba(255, 255, 255, 0.58);
   color: #71384d;
   font: inherit;
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   line-height: 1;
   cursor: pointer;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  transition: background .18s ease, opacity .18s ease;
+  transition: background 0.18s ease, opacity 0.18s ease;
 }
 .masking-figure-carousel [data-masking-carousel-direction="previous"] {
-  left: .7rem;
+  left: 0.85rem;
 }
 .masking-figure-carousel [data-masking-carousel-direction="next"] {
-  right: .7rem;
+  right: 0.85rem;
 }
 .masking-figure-carousel .masking-carousel-arrow:hover {
-  background: rgba(255, 255, 255, .88);
+  background: rgba(255, 255, 255, 0.88);
 }
 .masking-figure-carousel .masking-carousel-arrow:focus-visible {
   outline: 2px solid #71384d;
   outline-offset: 3px;
 }
 .masking-figure-carousel .masking-carousel-status {
-  margin-top: .35rem;
+  margin-top: 0.35rem;
   text-align: center;
-  font-size: .82rem;
-  opacity: .72;
+  font-size: 0.82rem;
+  opacity: 0.72;
 }
+
+.case-study .case-list {
+  margin: 0.35rem 0 1rem 1.2rem;
+  padding: 0 0 0 0.4rem;
+}
+.case-study .case-list li + li {
+  margin-top: 0.45rem;
+}
+.case-study .case-list strong {
+  font-weight: 700;
+}
+
 @media (max-width: 600px) {
-  .masking-figure-carousel .masking-carousel-slides {
-    aspect-ratio: 4 / 3;
-  }
   .masking-figure-carousel .masking-carousel-arrow {
-    width: 2.1rem;
-    height: 2.1rem;
+    width: 2.2rem;
+    height: 2.2rem;
     font-size: 1.25rem;
   }
   .masking-figure-carousel [data-masking-carousel-direction="previous"] {
-    left: .35rem;
+    left: 0.35rem;
   }
   .masking-figure-carousel [data-masking-carousel-direction="next"] {
-    right: .35rem;
+    right: 0.35rem;
+  }
+  .masking-figure-carousel .masking-carousel-slide {
+    padding-bottom: 2rem;
   }
 }
