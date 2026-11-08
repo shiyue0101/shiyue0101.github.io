@@ -35,6 +35,10 @@ html.split-project-active #star-bg .star {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
   }
+  .split-project-text > .case-study {
+    /* The split wrapper already starts below the site header. */
+    padding-top: 32px;
+  }
   .split-project-text {
     padding: 6px 14px 64px 0 !important;
   }

@@ -1,6 +1,11 @@
 /* Move content images into their own scrollable rail; keep original page navigation. */
 (() => {
   "use strict";
+  // A plain reload starts at the top; keep explicit section URLs and history navigation.
+  const plainReload =
+    !location.hash &&
+    performance.getEntriesByType("navigation")[0]?.type === "reload";
+  if (plainReload) history.scrollRestoration = "manual";
   function init() {
     if (document.querySelector(".split-project-root")) return;
     const root = document.querySelector("main.case-study");
@@ -102,6 +107,12 @@
     window.addEventListener("resize", recalc, { passive: true });
     window.addEventListener("pageshow", (e) => {
       if (e.persisted) recalc();
+      else if (plainReload) {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+          resetInitialScroll();
+        });
+      }
     });
   }
   if (document.readyState === "loading")
